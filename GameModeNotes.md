@@ -90,3 +90,59 @@ I _think_ it is:
   - GameMode seems to use a state machine called a "match"
   - InitGame calls `SetMatchState(EnteringMap)` but there are other states that
     are set at different points: (e.g. InProgress, LeavingMap, etc.)
+
+### What is the responsibility of the Controller?
+-  Unreal Documentation for `AController`:
+  - Controllers are non-physical actors that can possess a pawn to control its
+    actions. PlayerControllers are used by human players to control pawns, while
+    AIContollers implement the artificial intelligence for the pawns they
+    control. Controllers take control of a pawn using theri Possess() method,
+    and relinquesh control of the pawn by calling UnPossess()
+
+    Controllers receive notifications for many of the events ocurring for the
+    Pawn they are controlling. This gives teh controller the opportunity to
+    implement the behavior in response to this event, intercpeting the event and
+    superceding the Pawn's default behavior.
+
+    ControlRotation (accessed via GetControlRotation()) dtermines the
+    viewing/aiming of the controlled pawn and is affected by input such as from
+    a mouse or a gamepad
+
+  - Keeps a reference to "PlayerState" and "StartSpot" where it spawned. Also
+    has a "StateName" member. Does this keep track of a current state in some
+    state machine?
+
+  - Private members: keeps track of its controlled pawn, and "old" controlled
+    pawn for changing pawns (is this needed for single player?). Finally, it
+    also keeps track of the character being controlled. **If a character is
+    controlled the player controller, do `Pawn` and `Character` refer to the
+    same object? **
+
+  - Most of Controller's code seems to be related to multiplayer? Although
+    there is some "rotation" related code which seems a little weird that this
+    is specifically separated from the rest of the movement code that's set up
+    in Pawn implementations
+
+### What responsibility does PlayerController add to the Controller class?
+- From the unreal documentation:
+  - In networked games, PlayerControllers exist on the server for every
+    player-ctonrolled pawn, and also on the controlling client's machine. They
+    do NOT exist on a client's machine for pawns controled by remote players
+    elsewhere on the network.
+
+    One thing to consider when setting up your PlayerController is what
+    functionality should be in the PlayerController, and what should be in your
+    **Pawn**. It is possible to handle all input in the Pawn, especially for
+    less complex cases. However, if you have more complex needs, like multiple
+    players on one game cient, or the ability to change characters dynamically
+    at runtime, it might be better to handle input in the PlayerController. In
+    this case, the PlayerController decides what to do and then issues the
+    commands to the Pawn
+
+    Also, in some cases, putting input handling or other functionality into the
+    PlayerController is necessary. The PlayerController persists throughout the
+    game, while the Pawn can be transient. For example, in deathmatch style
+    gameplay, you may die and respawn. So you would get a new Pawn, but your
+    PlayerController would be the same. In this example, if you kept your score
+    on your Pawn, the score would reset, but if you kept your score on your
+    PlayerController, it would not.
