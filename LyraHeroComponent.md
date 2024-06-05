@@ -12,11 +12,11 @@
   - **How is the GameFrameworkInitStateInterface used?**
 
 - Component has "default mappings and priority" data member
-  - How is this used?
-  - Are there other mappings that _should_ be used instead of the default?
+  - **How is this used?**
+  - **Are there other mappings that _should_ be used instead of the default?**
 
-- Lyra Hero Component sets up input _and_ camera - why combine both these
-  responsibilities into one?
+- Lyra Hero Component sets up input _and_ camera
+  - **why combine both these responsibilities into one class?**
 
 ## How is input set up as a pawn component?
 - A similar method to SetupPlayerInputComponent: InitializePlayerInput
